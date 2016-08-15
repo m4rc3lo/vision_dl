@@ -7,7 +7,17 @@ Codes for vision course in ppgcc - http://ppgcc.posgrad.ufsc.br/
 │   └── test.cpp
 ├── CMakeLists.txt
 ├── include
-│   └── Pyramid.hpp
+│   ├── advanced
+│   │   └── Pyramid.hpp
+│   └── basic
+│       ├── Grayscale.hpp
+│       ├── Subtraction.hpp
+│       └── Vision.hpp
 ├── README.MD
 └── src
-    └── Pyramid.cpp
+    ├── advanced
+    │   └── Pyramid.cpp
+    └── basic
+        ├── Grayscale.cpp
+        ├── Subtraction.cpp
+        └── Vision.cpp
