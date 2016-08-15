@@ -33,8 +33,8 @@ if (OpenCV_VERSION)
 endif()
 
 # Adicionamos o diretório de include deste projeto.
-include_directories(include)
-include_directories(include/code)
+include_directories(include/advanced)
+include_directories(include/basic)
 # O diretório de include do framework também é adicionado,
 #include_directories(${FW_PATH}/include)
 # assim como o diretório onde espera-se encontrar a biblioteca.
