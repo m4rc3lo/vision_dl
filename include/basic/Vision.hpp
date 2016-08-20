@@ -15,22 +15,21 @@ class Vision
 {
   public:
 
-    void load(std::string path);
-    void load(std::string path1, std::string path2);
+    void load(cv::String path);
+    void load(cv::String path1, cv::String path2);
     
-    cv::Mat get_original_01(){ return this->source_01; }
-    cv::Mat get_original_02(){ return this->source_02; }
+    cv::Ptr<cv::Mat> get_original_01(){ return this->source_01; }
+    cv::Ptr<cv::Mat> get_original_02(){ return this->source_02; }
     
-    virtual cv::Mat run()=0;
+    virtual cv::Ptr<cv::Mat> run()=0;
 
   protected:
 
-    std::string path_01;
-    std::string path_02;
+    cv::String path_01;
+    cv::String path_02;
     
-    cv::Mat source_01;
-    cv::Mat source_02;
-    
+    cv::Ptr<cv::Mat> source_01;
+    cv::Ptr<cv::Mat> source_02;
 };
 
 #endif

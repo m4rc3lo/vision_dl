@@ -15,7 +15,7 @@ class Subtraction : public Vision
     
     public:
         
-        cv::Mat run();       
+        cv::Ptr<cv::Mat> run();       
         
 };
 

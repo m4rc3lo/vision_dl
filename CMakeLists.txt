@@ -1,11 +1,24 @@
+#Nome do Projeto
+project(Vision)
+
+
 # Esta linha é importante para garantir que não se tente usar uma versão antiga
 # do CMake. Freqüentemente são introduzidas novas features, então é importante.
 cmake_minimum_required(VERSION 3.0.0)
 
 
+SET(CMAKE_CXX_COMPILER "/usr/bin/g++")
+#SET(CMAKE_CXX_COMPILER "arm-linux-gnueabi-g++")
+
 # Seta o compilador para trabalhar com as diretivas do C++ 11.
 SET(GCC_COVERAGE_COMPILE_FLAGS "-std=c++11")
 SET( CMAKE_CXX_FLAGS  "${GCC_COVERAGE_COMPILE_FLAGS}" )
+
+SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -Wall -pedantic -Wextra -fpermissive" )
+
+SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
+
+SET(MAIN_FILE "app/run.cpp" CACHE STRING "Main file ...")
 
 # Define modo debug.
 #set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
@@ -26,7 +39,7 @@ if (OpenCV_VERSION)
   message(STATUS "OpenCV version: " ${OpenCV_VERSION_MAJOR} "." ${OpenCV_VERSION_MINOR} "." ${OpenCV_VERSION_PATCH})
 
   # Se a versão do OpenCV for menor que 3.0, emitimos um fatal error.
-  if(${OpenCV_VERSION_MAJOR} LESS 2 OR (${OpenCV_VERSION_MAJOR} EQUAL 2 AND ${OpenCV_VERSION_MINOR} LESS 3))
+  if(${OpenCV_VERSION_MAJOR} LESS 3 OR (${OpenCV_VERSION_MAJOR} EQUAL 2 AND ${OpenCV_VERSION_MINOR} LESS 3))
     message(FATAL_ERROR "You need OpenCV version 3.0 or later!")
   endif()
 

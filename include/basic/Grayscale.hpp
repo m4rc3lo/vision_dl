@@ -7,8 +7,9 @@
 class Grayscale : public Vision
 {
     public:
-    
-        cv::Mat run();
+        
+        Grayscale();
+        cv::Ptr<cv::Mat> run();
 };
 
 #endif

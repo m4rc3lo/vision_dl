@@ -7,24 +7,25 @@
 
 #include "Subtraction.hpp"
 
-cv::Mat Subtraction::run()
+cv::Ptr<cv::Mat> Subtraction::run()
 {
     
-    if (! (this->source_01.rows == this->source_02.rows && this->source_01.cols == this->source_02.cols))
+    if (! (this->source_01->rows == this->source_02->rows && this->source_01->cols == this->source_02->cols))
     {
-        std::cerr << "Incompatible dimensions images -- Exiting the program" << std::endl;
+        std::cerr << "Incompatible images dimensions -- Exiting the program" << std::endl;
         exit (EXIT_FAILURE);
     }
     
-    cv::Mat sub_img = cv::Mat(this->source_01.rows, this->source_01.cols, this->source_01.type());
-    
-    for (int height = 0 ; height < this->source_01.rows ; height++) 
-    {
-        cv::Vec3b* ptr_src_01 = this->source_01.ptr<cv::Vec3b>(height);
-        cv::Vec3b* ptr_src_02 = this->source_02.ptr<cv::Vec3b>(height);
-        cv::Vec3b* ptr_dst = sub_img.ptr<cv::Vec3b>(height);
+    cv::Ptr<cv::Mat> sub_img (new cv::Mat (this->source_01->rows, this->source_01->cols, this->source_01->type()));
 
-            for (int width = 0 ; width < this->source_01.cols ; width++ ) 
+    
+    for (int height = 0 ; height < this->source_01->rows ; height++) 
+    {
+        cv::Vec3b* ptr_src_01 = this->source_01->ptr<cv::Vec3b>(height);
+        cv::Vec3b* ptr_src_02 = this->source_02->ptr<cv::Vec3b>(height);
+        cv::Vec3b* ptr_dst = sub_img->ptr<cv::Vec3b>(height);
+
+            for (int width = 0 ; width < this->source_01->cols ; width++ ) 
             {
                 
                 uchar sub_b = abs(ptr_src_01[width][0] - ptr_src_02[width][0]);
