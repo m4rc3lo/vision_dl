@@ -10,11 +10,24 @@
 
 #include "Vision.hpp"
 
+/**
+ * @inheritance Vision.hpp
+ * 
+ * Class for subtract two images
+ * In color mode
+ */
 class Subtraction : public Vision
 {
     
     public:
         
+        Subtraction ();
+        
+        /**
+         * Implement Vision run()
+         * Retrun a smart pointer for a new image.
+         * BGR image, 3 channel (8bits)
+         */
         cv::Ptr<cv::Mat> run();       
         
 };

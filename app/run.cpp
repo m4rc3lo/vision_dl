@@ -6,12 +6,13 @@
 //------------------------------------------------------------------------------
 
 //#include <memory> /** for std::stshare_ptr */
-#include <cstdint>
-#include <cstdlib>
-#include <iostream>
+#include <cstdint>  // for int8_t a signed char (8bits)
+#include <cstdlib>  // general purpose fucntion
+#include <iostream> // input/output stream objects
+//#include <utility>
 //------------------------------------------------------------------------------
 //#include <opencv2/cvstd.hpp>
-#include <opencv2/core.hpp>
+#include <opencv2/core.hpp> // core functionalities
 //#include <opencv2/highgui.hpp>
 //------------------------------------------------------------------------------
 #include "Show.hpp"
@@ -19,138 +20,135 @@
 #include "Grayscale.hpp"
 #include "Subtraction.hpp"
 //------------------------------------------------------------------------------
+
 /**
- * 
+ * Global varial, strinf type in opencv.
+ * A help message cecessary for cv::CommandLineParser.
  */
 const cv::String keys =
         "{help h usage ? |      | print this message   }"
-        "{@path_image1   |<none>| original image       }"
-        "{@path_image2   |      | image2 for compare   }"
-        "{op operation   |<none>| \"string\"           }"
-        "{value          | 1.0  | path to file         }"
+        "{img1           |      | original image1      }"
+        "{img2           |      | original image2      }"
+        "{op operation   |      | operation            }"
+        "{value          | 1.0  | number               }"
         ;
 
-enum class Operation : int8_t {Grayscale = 0, Subtraction = 1};
+/**
+ * Enum class for operations
+ */
+enum class Operation : uint8_t {Grayscale = 1, Subtraction = 2, Undefined = 255};
 
-static void help ();
+//static void help (); /**Show the help message*/
+
+/**This fucntion convert a string in Operation (enum class)
+ *    @param cv::String
+ *    @return Operation
+ * 
+ * The inline fuctions are replaced by your code in compiling time.
+ */
 inline Operation hashit (cv::String const& operation_);
 //------------------------------------------------------------------------------
 
-int main (int argc, char **argv)
+//------------------------------------------------------------------------------
+/**Main fuction */
+int main (int argc, char** argv)
 {
+    /**Parser for command line*/
     cv::CommandLineParser parser (argc, argv, keys);
-    parser.about("Vision Basic v0.0.1");
+    parser.about("Vision Basic v0.0.2");
     
-    if ( parser.has("help") || argc < 2 )
+    /**Test for a valid command line*/
+    if ( parser.has("help") || argc < 2)
     {
+        std::cout << "\n\n";
         parser.printMessage();
         exit(EXIT_FAILURE);
     }
     
-    switch (hashit(parser.get<cv::String>("operation"))) 
+    system("clear"); // clear terminal
+    
+    /**
+     * Choose opertation.
+     * "operation" is a fild dfined in <keys>
+     */
+    switch (hashit(parser.get<cv::String>("op"))) 
     {
         case Operation::Grayscale: 
         {
-            //std::cout << "Ops_1" << std::endl;
-            
+            /** smart pointer for Grayscale class*/
             cv::Ptr<Grayscale> gray (new Grayscale());
-            gray->load(parser.get<cv::String>(1));
             
-            cv::Ptr<cv::Mat> image_dst = gray->run();// (new cv::Mat(gray->run()));
+            gray->load(parser.get<cv::String>("img1")); /**Load image*/
             
-            dl::Show::show(gray->get_original_01(), image_dst, "Original Image", "Grayscale Image");
+            /**Do grayscale conversion
+            * image_dst is a new one
+            */
+            cv::Ptr<cv::Mat> image_dst = gray->run();
+            
+            /**Show  original and result*/
+            dl::Show::show(gray->get_original_01(), image_dst, "Original", "Grayscale");
             break;
         }
         
         case Operation::Subtraction:
         {
-        //    std::stringstream stream_;
-        //    stream_ << hashit(parser.get<cv::String>("operation", true));
-        //    std::cout <<  "\t " << stream_ << std::endl;
-            //cv::Ptr<Grayscale> gray();
-            //cv::Mat image_dst;
-            //cv::Ptr<cv::Mat> image_dst();  
+            /**smart pointer for Subtraction class
+             * load two images
+             */ 
+            cv::Ptr<Subtraction> sub (new Subtraction());
+            sub->load(parser.get<cv::String>("img1"), parser.get<cv::String>("img2"));
             
-            //std::string("../img/original/r1w4_640x480.png")
-            //gray->load(parser.get<cv::String>(1));
-            //image_dst = gray->run();
-            //.reset(&gray->run());// = cv::Ptr<cv::Mat>.operator ()(cv::Mat(gray->run());//new cv::Ptr<cv::Mat>(cv::Mat(gray->run()));
-            
-            //cv::namedWindow("Original Image 01", CV_WINDOW_KEEPRATIO);
-            //cv::imshow("Original Image 01", gray->get_original_01());
-            
-            //cv::namedWindow("Grayscale Image", CV_WINDOW_KEEPRATIO);
-            //cv::imshow("Grayscale Image", image_dst);
-            //cv::imshow("Grayscale Image", (cv::Mat*)image_dst);
-            //cv::waitKey(0);
-            std::cout << "Ops_2" << std::endl;            
-            break;            
-            
+            /*Do subtraction images
+             * image_dst is a new one
+             */
+            cv::Ptr<cv::Mat> image_dst = sub->run();
+
+            /**Show  originals and result*/
+            dl::Show::show(sub->get_original_01(),
+                           sub->get_original_02(),
+                           image_dst,
+                           "Image1",
+                           "Image2",
+                           "Result"
+                           );
+            break;
         }
+        /** Do more cases ...*/
         default:
         {   
-            std::cout << "Ops_3" << std::endl;
-        }    
+            /** cheks */
+            std::cout << "something wrong!" << std::endl;
+            if (hashit(parser.get<cv::String>("op")) == Operation::Undefined)
+            {
+                std::cout << "chek --operation" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+        }
                 
     }
-    
-    std::cout << "Ops_" << std::endl;
+    /**close the program*/
     exit(EXIT_SUCCESS) ;
     
-}  
-    
-    //--------------------------------------------------------------------------
-    //process images
-    
-    /*
-    Subtraction sutraction_image;
-    sutraction_image.load(std::string("../../img/original/deb8_800x600.jpg"),
-                          std::string("../../img/original/deb8_tux_800x600.jpg"));
-    
-    cv::Mat sub_image = sutraction_image.run();
-    
-    //--------------------------------------------------------------------------
-    // show results
-    //cv::namedWindow("Original Image 01", CV_WINDOW_KEEPRATIO);
-    cv::namedWindow("Original Image 01", CV_WINDOW_KEEPRATIO);
-    cv::imshow("Original Image 01", sutraction_image.get_original_01());
-    
-    cv::namedWindow("Original Image 02", CV_WINDOW_KEEPRATIO);
-    cv::imshow("Original Image 02", sutraction_image.get_original_02());
+    }  
 
-    cv::namedWindow("Subtraction Image", CV_WINDOW_KEEPRATIO);
-    cv::imshow("Subtraction Image", sub_image);
-    
-    cv::waitKey(0);    
-    //--------------------------------------------------------------------------
-  
-    return 0;
-}
-//------------------------------------------------------------------------------
-
-*/
-    
-void help ()
-{
-    std::cout 
-            << "\tThis program illustrates the use of basic structures in opencv 3.1.0\t"
-            << "\tInterate a structure cv::Mat"
-            << "Usage: "
-            ;
-            
-}
-
+/**
+ * This fuction checks dor a know operation.
+ * Return Operation::Undefined otherwise. 
+ * @param cv::String operation_
+ * @return Operation (enum class)
+ */
 inline Operation hashit (cv::String const& operation_)
 {
-    if (operation_.compare("grayscale"))
+    if (operation_.compare("grayscale") == 0)
     {
         std::cout << "grayscale" << std::endl;
         return Operation::Grayscale;
-    }
-    
-    else if (operation_.compare("subtraction"))
+    }    
+    else if (operation_.compare("subtraction") == 0)
     {
          std::cout << "subtraction" << std::endl;
         return Operation::Subtraction;
     }
+    else
+        return Operation::Undefined;
 }

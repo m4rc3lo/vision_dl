@@ -14,8 +14,8 @@ namespace dl
 {
     class Show
     {
-
         public:
+       
             static void show (cv::Ptr<cv::Mat> image, cv::String name_);
             
             static void show 
@@ -24,11 +24,18 @@ namespace dl
                               cv::String name_1,
                               cv::String name_2 
                             );
-
+            
+            static void show 
+                            ( cv::Ptr<cv::Mat> image_1, 
+                              cv::Ptr<cv::Mat> image_2,
+                              cv::Ptr<cv::Mat> image_3,
+                              cv::String name_1,
+                              cv::String name_2, 
+                              cv::String name_3
+                            );            
         private:
             
             Show();
-
     };
 }
 
