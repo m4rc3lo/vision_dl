@@ -7,18 +7,75 @@ project(Vision)
 cmake_minimum_required(VERSION 3.0.0)
 
 
-SET(CMAKE_CXX_COMPILER "/usr/bin/g++")
+set(CMAKE_CXX_COMPILER "g++")
 #SET(CMAKE_CXX_COMPILER "arm-linux-gnueabi-g++")
 
 # Seta o compilador para trabalhar com as diretivas do C++ 11.
-SET(GCC_COVERAGE_COMPILE_FLAGS "-std=c++11")
-SET( CMAKE_CXX_FLAGS  "${GCC_COVERAGE_COMPILE_FLAGS}" )
+set(GCC_COVERAGE_COMPILE_FLAGS "-std=c++11")
+set( CMAKE_CXX_FLAGS  "${GCC_COVERAGE_COMPILE_FLAGS}" )
 
-SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -Wall -pedantic -Wextra -fpermissive" )
+set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -Wall -pedantic -Wextra -fpermissive" )
 
-SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
+set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 
-SET(MAIN_FILE "app/run.cpp" CACHE STRING "Main file ...")
+set(MAIN_FILE "app/run.cpp" CACHE STRING "Main file ...")
+
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+
+# Find the QtWidgets library
+#find_package(Qt5Widgets)
+find_package(Qt5Core ${QT_VERSION_REQ} REQUIRED)
+find_package(Qt5Widgets ${QT_VERSION_REQ} REQUIRED)
+
+set (CMAKE_PREFIX_PATH $ENV{HOME}/Qt5.5.0/5.5/gcc_64)
+
+set (VisoinLib_src ${PROJECT_SOURCE_DIR}/src/gui/PointList.cpp)
+set (VisoinLib_hdr ${PROJECT_SOURCE_DIR}/include/gui/PointList.h)
+set (VisoinLib_ui  ${PROJECT_SOURCE_DIR}/PointList.ui)
+set (VisoinLib_src ${PROJECT_SOURCE_DIR}/test.cpp)
+
+qt5_wrap_cpp(VisionLib_hdr_moc ${VisiontLib_hdr})
+qt5_wrap_ui (VisionLib_ui_moc  ${VisionLib_ui})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+
+#add_library (VisionLib SHARED ${VisionLib_src} ${VisionLib_hdr_moc} ${VisionLib_ui_moc})
+#target_link_libraries (VisionLib Qt5::Widgets)
+
+
+#INCLUDE(${Qt5Widgets_INCLUDE_DIRS})
+#INCLUDE( ${Qt5Widgets_LIBRARIES})
+ 
+#QT5_WRAP_UI(UISrcs src/gui/PointList.ui)
+#QT5_WRAP_CPP(MOCSrcs include/gui/PointList.h)
+# Tell CMake to create the helloworld executable
+#//add_executable(helloworld WIN32 main.cpp)
+
+# Use the Widgets module from Qt 5.
+#//target_link_libraries(helloworld Qt5::Widgets)
+
+
+#FIND_PACKAGE(Qt5 REQUIRED)
+
+#find_package(Qt5Core ${QT_VERSION_REQ} REQUIRED)
+#find_package(Qt5Quick ${QT_VERSION_REQ} REQUIRED)
+#find_package(Qt5Widgets ${QT_VERSION_REQ} REQUIRED)
+
+#INCLUDE(${QT_USE_FILE})
+#INCLUDE(${Qt5Widgets_INCLUDE_DIRS})
+#INCLUDE( ${Qt5Widgets_LIBRARIES})
+
+ 
+#QT5_WRAP_UI(UISrcs MyWidget.ui)
+#QT5_WRAP_CPP(MOCSrcs MyWidget.h)
+ 
+
+
+
+
 
 # Define modo debug.
 #set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
@@ -48,6 +105,7 @@ endif()
 # Adicionamos o diretório de include deste projeto.
 include_directories(include/advanced)
 include_directories(include/basic)
+include_directories(include/gui)
 # O diretório de include do framework também é adicionado,
 #include_directories(${FW_PATH}/include)
 # assim como o diretório onde espera-se encontrar a biblioteca.
@@ -66,10 +124,14 @@ add_library(code STATIC ${lib_sources})
 # framework.
 #target_link_libraries(code ${OpenCV_LIBS} fw)
 target_link_libraries(code ${OpenCV_LIBS} )
+target_link_libraries(code Qt5::Widgets)
+target_link_libraries(code Qt5::Core)
 
 # Informamos ao CMake para criar um executável chamado test (test.exe no
 # Windows) a partir do arquivo app/test.cpp.
-add_executable(run app/run.cpp)
+#add_executable(run app/run.cpp)
+add_executable(run ${MAIN_FILE} ${VisiontLib_hdr} ${VisionLib_ui})
+
 
 # Este executável depende da biblioteca ex, também construída por este arquivo.
-target_link_libraries(run code)
+target_link_libraries(run code ${QT_LIBRARIES})

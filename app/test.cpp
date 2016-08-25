@@ -1,12 +1,25 @@
 #include <highgui.h>
 //#include 
 #include <iostream>
+//#include <qt5/QtWidgets/QApplication>
+#include <QApplication>
 
-#include "code/texture.hpp"
+//#include "code/texture.hpp"
+#include "PointList.h"
+
 
 int main(int argc, char **argv)
 {
-  //if (argc < 2)
+  
+    QApplication app (argc, argv);
+    
+    PointList list;
+    list.show();
+    
+    return app.exec();
+}
+
+/*if (argc < 2)
   //{
     //std::cerr << "test IMAGE-IN IMAGE-OUT" << std::endl;
     //return 1;
@@ -30,6 +43,8 @@ int main(int argc, char **argv)
   cv::waitKey(0);
   
   std::cout << "Done" << std::endl;
-  
-}
+   */
 
+//return 0;
+  
+ //}
