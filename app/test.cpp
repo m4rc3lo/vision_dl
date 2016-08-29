@@ -1,22 +1,25 @@
 #include <highgui.h>
-//#include 
 #include <iostream>
 //#include <qt5/QtWidgets/QApplication>
-#include <QApplication>
+//#include <QApplication>
 
 //#include "code/texture.hpp"
-#include "PointList.h"
+//#include "PointList.h"
 
+#include "Histogram.hpp"
+#include "Vision.hpp"
 
 int main(int argc, char **argv)
 {
+    
+    Histogram hist_;
+    
+    hist_.load("/home/marcelo/Dropbox/PPGCC/2016-02/disciplinas/visao/img/bd/12003.jpg");
+    hist_.run();
   
-    QApplication app (argc, argv);
     
-    PointList list;
-    list.show();
     
-    return app.exec();
+    
 }
 
 /*if (argc < 2)
@@ -48,3 +51,13 @@ int main(int argc, char **argv)
 //return 0;
   
  //}
+
+
+/*
+ * QApplication app (argc, argv);
+    
+    PointList list;
+    list.show();
+    
+    return app.exec();
+ */
