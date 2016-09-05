@@ -21,9 +21,16 @@ std::vector<cv::Vec3b> samples;
 void run ();
 void CallBack(int event, int x, int y, int flags, void* userdata);
 cv::Ptr<cv::Mat> img_;
-//ew cv::Mat(cv::imread("../../img/original/deb8_800x600.jpg"));
+cv::Ptr<cv::Mat> read_xml (cv::Ptr<cv::Mat> file);
+
+cv::Vec3b calc_average(cv::Ptr<cv::Mat> file_);
+
+cv::Ptr<cv::Mat> class_l2_norm(cv::Ptr<cv::Mat> img_, cv::Vec3b average_pixel);
+
 //------------------------------------------------------------------------------
 
+//ew cv::Mat(cv::imread("../../img/original/deb8_800x600.jpg"));
+//------------------------------------------------------------------------------
 
 int main(int argc, char **argv)
 {
@@ -62,9 +69,7 @@ int main(int argc, char **argv)
     
     cv::waitKey(0);
     
-    
-   cv::Ptr<cv::Mat> mat_samples (new cv::Mat(samples)); 
-   
+    cv::Ptr<cv::Mat> mat_samples (new cv::Mat(samples)); 
    
    std::cout << "size: " << std::to_string(samples.size()) << std::endl;
    std::cout << "\n Mat Samples: \n" << *mat_samples <<std::endl;
@@ -87,6 +92,13 @@ int main(int argc, char **argv)
     fs.release();
     
     //return app.exec();
+    cv::Ptr<cv::Mat> image_read;
+    image_read = read_xml(image_read);
+    
+    calc_average(image_read);
+    
+    std::cout << "out function " << *image_read;
+    
     return 0;
 }
 
@@ -94,6 +106,8 @@ int main(int argc, char **argv)
  * Events <mouse move> + <hold alt key> in orignal image window!
  * in this function x is columns and y is lines (in cv::Mat)!
  */
+
+//------------------------------------------------------------------------------
 
 void CallBack(int event, int x, int y, int flags, void* userdata)
 {
@@ -117,7 +131,6 @@ void CallBack(int event, int x, int y, int flags, void* userdata)
             samples.push_back(pixel_[col]);
         
         
-        
         //samples.push_back(temp);
         
         int thickness = -1;
@@ -126,6 +139,7 @@ void CallBack(int event, int x, int y, int flags, void* userdata)
         cv::circle( *img_, cv::Point(x,y), 3.0, cv::Scalar( 0, 0, 0 ), thickness, lineType );
         cv::imshow("image", *img_);
     }
+        
     
     /*
     if  ( event == cv::EVENT_LBUTTONDOWN )
@@ -146,11 +160,8 @@ void CallBack(int event, int x, int y, int flags, void* userdata)
 
     }
     */
-    
     //delete[] pixel_;
-    
 }
-
 
 void run ()
 {
@@ -161,3 +172,101 @@ void run ()
     
     cv::imshow("image", *img_);
 }
+
+cv::Ptr<cv::Mat> read_xml (cv::Ptr<cv::Mat> file)
+{
+   cv::FileStorage fs_read ("/home/marcelo/Dropbox/PPGCC/2016-02/disciplinas/visao/img/bd/test.xml", cv::FileStorage::READ); 
+   cv::Mat img;
+   
+   if (fs_read.isOpened()) 
+   {
+       fs_read["samples"] >> img;
+      // std::cout << "Image read:\n" << img;
+       
+       //cv::Ptr<cv::Mat> mat_samples (new cv::Mat(samples)); 
+   
+       //file.operator = (cv::Ptr<cv::Mat> (new cv::Mat(img)));
+       // = cv::Ptr<cv::Mat> (new cv::Mat(img));
+       std::cout << "Image read:\n" << img; 
+   }
+   else 
+   {
+       std::cout << "not open" << std::endl;
+   }
+   
+   return cv::Ptr<cv::Mat> (new cv::Mat(img));
+   
+   std::cout << "read_xml - end" << std::endl;   
+}
+
+cv::Vec3b calc_average(cv::Ptr<cv::Mat> file_)
+{
+    float b = 0;
+    float g = 0;
+    float r = 0;
+    
+    
+    //CV_Assert(file_->data);
+    
+    int cout = 0;
+    
+    for (auto row = 0 ; row < file_->rows ; row++ )
+    {
+        cv::Vec3b* pixel = file_->ptr<cv::Vec3b>(row);
+                
+        
+        for (auto cols = 0 ; cols < file_->cols ; cols++)
+        {
+            
+            cout++;
+            std::cout << "interarion: " << cout << std::endl;
+            
+            b += pixel[cols][0];
+            g += pixel[cols][1];
+            r += pixel[cols][2];            
+        }
+    }
+    
+    b = b / (file_->rows * file_->cols);
+    g = g / (file_->rows * file_->cols);
+    r = r / (file_->rows * file_->cols);
+    
+    
+    std::cout << "b: " << std::to_string(b) << std::endl;
+    std::cout << "g: " << std::to_string(g) << std::endl;
+    std::cout << "r: " << std::to_string(r) << std::endl;
+    
+    std::cout << "b: " << std::to_string((uchar)b) << std::endl;
+    std::cout << "g: " << std::to_string((uchar)g) << std::endl;
+    std::cout << "r: " << std::to_string((uchar)r) << std::endl;
+    
+    
+    cv::Vec3b average;
+    
+    average[0] = (uchar)b;
+    average[1] = (uchar)g;
+    average[2] = (uchar)r;
+    
+    return average;
+    
+    
+}
+
+cv::Ptr<cv::Mat> class_l2_norm(cv::Ptr<cv::Mat> img_, cv::Vec3b average_pixel)
+{
+    
+    for(auto row = 0 ; row < img_->rows ; row++)
+    {
+        cv::Vec3b* pixel = img_->ptr<cv::Vec3b>(row);
+                
+        for (auto col = 0 ; col < img_->cols ; col++)            
+        {
+            pixel[col][0];
+            pixel[col][1];
+            pixel[col][2];
+            
+        }
+    }
+    
+}
+
